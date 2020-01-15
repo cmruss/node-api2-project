@@ -10,7 +10,6 @@ margin: 0 auto;
 `
 const initialState = {
     text:"",
-    post_id: ''
 }
 
 const ApiListItem = props => {
@@ -20,18 +19,33 @@ const ApiListItem = props => {
 
     const { id, title, contents } = props.item;
 
-      useEffect(() => {
-    axios
-      .get(`http://localhost:4000/api/posts/${id}/comments`)
-      .then(res => {
+    const handleSubmit = e => {
+        e.preventDefault();
+        axios
+            .post(`http://localhost:4000/api/posts/${id}/comments`, response)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        setResponse({ text: ""});
+    }
+
+    useEffect(() => {
+        axios
+        .get(`http://localhost:4000/api/posts/${id}/comments`)
+        .then(res => {
         console.log(res)
         setNestedList(res.data)
-      })
-      .catch(err => console.log(err.response));
-  }, [setNestedList])
+        })
+        .catch(err => {
+            console.log(err.response)
+        });
+  }, [setNestedList, setResponse, handleSubmit])
 
     const handleChange = e => {
-        e.persist();
+        // e.persist();
         setResponse({
             ...response,
             text:e.target.value,
@@ -39,14 +53,7 @@ const ApiListItem = props => {
         })
     }
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        axios
-            .post(`http://localhost:4000/api/posts/${id}/comments`, response)
-            .then(res => {
-                
-            })
-    }
+
 
     return(
         <StyledListItem className='list-item'>
@@ -56,13 +63,13 @@ const ApiListItem = props => {
                 {!editing ? ( 
                     <span></span> 
                 ) : ( 
-                        <div>
+                        <form>
                             <input
                                 value={response.text}
                                 onChange={handleChange}
                             />
                             <button onClick={handleSubmit}>submit</button>
-                        </div>    
+                        </form>    
                     )}
                 <NestedList nestedList={nestedList} setNestedList={setNestedList}/>
             </div>

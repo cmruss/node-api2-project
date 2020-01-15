@@ -108,14 +108,17 @@ router.put('/:id', (req, res) => {
 
 //POST COMMENTS
 router.post('/:id/comments', (req, res) => {
-    const { text, post_id } = req.body;
+    
+    const { id } = req.params;
+    let comment = req.body;
+    comment = { ...comment, post_id: id}
 
-    if (!text || !post_id){
+    if (!comment.text){
         res.status(400).json({ errorMessage: "Please provide text for the comment." })
     }
-    Posts.insertComment({ text, post_id})
-    .then(comment => {
-        res.status(201).json(comment.id)
+    Posts.insertComment(comment)
+    .then(_comment => {
+        res.status(201).json(_comment.id)
     })
     .catch(err => {
         console.log(err);
