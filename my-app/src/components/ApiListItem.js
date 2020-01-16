@@ -29,7 +29,7 @@ const ApiListItem = props => {
             .catch(err => {
                 console.log(err);
             })
-        setResponse({ text: ""});
+        setResponse({ text: ""})
     }
 
     useEffect(() => {
